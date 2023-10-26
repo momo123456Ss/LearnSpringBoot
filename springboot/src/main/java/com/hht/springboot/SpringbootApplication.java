@@ -5,7 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.hht.springboot")
+@ComponentScan(basePackages = {
+    "com.hht.springboot.controller",
+    "com.hht.springboot.repository",
+    "com.hht.springboot.service",
+    "com.hht.springboot.formatters",
+    "com.hht.springboot.configs"
+})
 public class SpringbootApplication {
 
     public static void main(String[] args) {

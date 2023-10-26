@@ -1,0 +1,54 @@
+<section xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+         layout:decorate="~{default-layout.html}" 
+         layout:fragment="content">
+    <title th:text="'Trang quản lý user bởi Admin'">Default</title>
+    <a th:href="@{/admin/register/new}" class="btn btn-info mb-2">Add</a>
+
+    <form th:action="@{/admin/index/User/}" method="get" class="d-flex">
+        <input class="form-control me-2" type="text" name="Username" placeholder="Search username..." />
+        <select name="roleUser" id="role">
+            <option value=""></option>
+            <th:block th:each="role : ${roleList}">
+                <option th:value="${role.id}" th:text="${role.name}"></option>
+            </th:block>
+        </select>
+        <button class="btn btn-primary ml-2" type="submit">Search</button>
+    </form>
+    <div class="mt-5" th:if="${counter > 1}">
+        <ul class="pagination mt-1">
+            <li class="page-item"><a class="page-link" th:href="@{/admin/index/User/}">All</a></li>
+            <th:block th:each="i : ${#numbers.sequence(1, counter)}">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/admin/index/User/(page=${i})}" th:text="${i}" onclick="reload()"></a>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Configs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${listUsers}">
+                <td>
+                    <img th:src="${user.image}" alt="" width="120" height="120" />
+                </td>
+                <td th:text="${user.firstname}">First Name</td>
+                <td th:text="${user.lastname}">Last Name</td>
+                <td th:text="${user.email}">Email</td>
+                <td>
+                    <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn btn-success">Update</a>
+                    <!--                    <button class="btn btn-danger" th:attr="onclick='delUser(\'' + @{/admin/users/{id}(id=${user.id})} + '\', ' + ${user.id} + ')">Delete</button>-->
+                    <!--                    <button class="btn btn-danger" th:attr="onclick='delUser(\'' + @{'/admin/users/' + user.id} + '\', ' + ${user.id} + ')">Delete</button>-->
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>

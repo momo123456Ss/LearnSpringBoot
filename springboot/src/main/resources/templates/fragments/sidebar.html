@@ -1,6 +1,25 @@
 <nav id="sidebar" th:fragment="side_bar">
     <div class="p-4 pt-5">
-        <a href="#" class="img logo rounded-circle mb-5" th:style="'background-image: url(' + @{/images/logo.jpg} + ');'"></a>
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <p style="text-align: center;">
+                <span th:text="${principalInfo.fkuserRoleuserId.name}"></span>
+                <span th:text="${principalInfo.firstname}">                  
+                </span> <span th:text="${principalInfo.lastname}"></span>
+            </p>
+            <a th:href="@{'/details/users/' + ${principalInfo.id}}" class="img logo rounded-circle mb-5" th:style="'background-image: url(' + ${principalInfo.image} + ');'"></a>
+            <a style="text-align: center;" class="nav-link" th:href="@{/}"><span th:text="${#authentication.name}"></span></a>
+            <form th:action="@{/logout}" method="post">
+                <p style="text-align: center;">
+                    <input type="submit" value="Logoff" class="btn btn-danger" />
+                </p>
+            </form>
+        </div>
+        <div th:unless="${#authorization.expression('isAuthenticated()')}">
+            <p style="text-align: center;">
+                <a th:href="@{/loginPage/}" class="btn btn-success">Sign In</a>
+                <!--<a th:href="@{/register}" class="btn btn-info">Register</a>-->
+            </p>
+        </div>
         <ul class="list-unstyled components mb-5">
             <li class="active">
                 <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
