@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Cloudinary cloudinary;
-//    @Autowired
-//    private BCryptPasswordEncoder passEncoder;
+    @Autowired
+    private BCryptPasswordEncoder passEncoder;
 
     @Autowired
     private RoleService roleService;
@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer id) {
         return this.userRepository.findById(id).get();
+//        return entityManager.find(User.class, id);
     }
 
     @Override
@@ -170,7 +171,7 @@ public class UserServiceImpl implements UserService {
                     }
                     user.setCreatedDate(f.format(new Date()));
                     user.setFkuserRoleuserId(this.roleService.getRoleUserById(3));
-//                    user.setPassword(this.passEncoder.encode(user.getPassword()));
+                    user.setPassword(this.passEncoder.encode(user.getPassword()));
                     StaticSession.msgError = "";
                     this.userRepository.save(user);
                 }
@@ -213,7 +214,7 @@ public class UserServiceImpl implements UserService {
         }
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(u.getFkuserRoleuserId().getName()));
-         org.springframework.security.core.userdetails.User p  = new org.springframework.security.core.userdetails.User( u.getUsername(), u.getPassword(), authorities);
+        org.springframework.security.core.userdetails.User p = new org.springframework.security.core.userdetails.User(u.getUsername(), u.getPassword(), authorities);
         return new org.springframework.security.core.userdetails.User(
                 u.getUsername(), u.getPassword(), authorities);
     }
@@ -224,6 +225,17 @@ public class UserServiceImpl implements UserService {
         Query q = this.entityManager.createQuery("FROM User WHERE username=:un");
         q.setParameter("un", username);
         return (User) q.getSingleResult();
+    }
+
+    @Override
+    public boolean changePassword(User user) {
+        if (this.passEncoder.matches(user.getOldPassword(), user.getPassword())) {
+            user.setPassword(this.passEncoder.encode(user.getNewPassword()));
+            this.userRepository.save(user);
+            return true;
+        }
+        StaticSession.msgError = "Mật khẩu cũ không chính xác";
+        return false;
     }
 
 }

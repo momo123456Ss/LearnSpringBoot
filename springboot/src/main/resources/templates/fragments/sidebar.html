@@ -2,7 +2,6 @@
     <div class="p-4 pt-5">
         <div th:if="${#authorization.expression('isAuthenticated()')}">
             <p style="text-align: center;">
-                <span th:text="${principalInfo.fkuserRoleuserId.name}"></span>
                 <span th:text="${principalInfo.firstname}">                  
                 </span> <span th:text="${principalInfo.lastname}"></span>
             </p>
@@ -41,8 +40,8 @@
             <li>
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
                 <ul class="collapse list-unstyled" id="pageSubmenu">
-                    <li>
-                        <a href="#">Page 1</a>
+                    <li th:if="${#authorization.expression('isAuthenticated()')}">
+                        <a th:if="${principalInfo.fkuserRoleuserId.name == 'ROLE_ADMIN'}" th:href="@{/admin/index/User/}">User</a>
                     </li>
                     <li>
                         <a href="#">Page 2</a>

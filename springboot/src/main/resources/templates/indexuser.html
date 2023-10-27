@@ -43,7 +43,8 @@
                 <td th:text="${user.lastname}">Last Name</td>
                 <td th:text="${user.email}">Email</td>
                 <td>
-                    <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn btn-success">Update</a>
+                    <a th:href="@{/admin/update/{id}(id=${user.id})}" class="btn btn-success mt-2">Update</a>
+                    <a th:href="@{/admin/update/password/user/{id}(id=${user.id})}" class="btn btn-dark text-white mt-2">Change password</a>
                     <!--                    <button class="btn btn-danger" th:attr="onclick='delUser(\'' + @{/admin/users/{id}(id=${user.id})} + '\', ' + ${user.id} + ')">Delete</button>-->
                     <!--                    <button class="btn btn-danger" th:attr="onclick='delUser(\'' + @{'/admin/users/' + user.id} + '\', ' + ${user.id} + ')">Delete</button>-->
 

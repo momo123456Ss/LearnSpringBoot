@@ -5,7 +5,9 @@
     </head>
     <body>
         <section layout:fragment="content">
-            <div>Page 2</div>
+            <p th:text="${user.firstname}">First Name</p>
+            <p th:text="${user.lastname}">Last Name</p>
+            <p th:text="${user.email}">Email</p>
         </section>
     </body>
 </html>

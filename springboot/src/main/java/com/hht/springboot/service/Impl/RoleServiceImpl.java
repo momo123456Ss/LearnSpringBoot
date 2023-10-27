@@ -31,7 +31,8 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Roleuser getRoleUserById(int id) {
-        return entityManager.find(Roleuser.class, id);
+        return this.roleRepository.findById(id).get();
+//        return entityManager.find(Roleuser.class, id);
     }
 
 }

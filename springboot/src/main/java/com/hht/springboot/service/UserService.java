@@ -24,7 +24,9 @@ public interface UserService extends UserDetailsService {
     boolean checkUserName(String username);
 
     User getUserByUsername(String username);
-
+    
+    boolean changePassword(User user);
+    
     List<User> getAllUsers();
 
     User saveUser(User user);

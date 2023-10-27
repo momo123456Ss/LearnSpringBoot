@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -37,8 +38,8 @@ public class IndexController {
     public String index(Model model, @RequestParam Map<String, String> params) {
         return "home";
     }
-     @GetMapping("/")
-    public String index2(Model model, @RequestParam Map<String, String> params) {
+    @GetMapping("/")
+    public String update(Model model, @PathVariable(value = "id") int id) {
         return "home";
     }
 }

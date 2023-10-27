@@ -25,7 +25,6 @@
         }
     </style>
     <title th:text="'Đăng ký người dùng bởi Admin'">Trang mặc định</title>
-    <h2 class="mb-4">Đăng ký người dùng bởi Admin</h2>
     <div class="bg-image" 
          style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
         <div class="mask d-flex align-items-center h-100 gradient-custom-3 ">
@@ -35,41 +34,44 @@
                         <div class="card mt-5 mb-5" style="border-radius: 15px;">
                             <div class="card-body p-5">
 
-                                <form th:action="@{/admin/register}" method="post" th:object="${user}" enctype="multipart/form-data" onsubmit="matchPassword()">
+                                <form th:action="@{/admin/register}" method="post" th:object="${user}" enctype="multipart/form-data" onsubmit="return matchPassword(event)">
                                     <input type="hidden" th:field="*{image}" />
                                     <input type="hidden" th:field="*{id}" />
                                     <input type="hidden" th:field="*{createdDate}" />
-                                    <input type="hidden" th:field="*{fkuserRoleuserId}" />
-
+                                    <input th:if="${user.id == null}" type="hidden" th:field="*{fkuserRoleuserId}" />
+                                    <input th:if="${user.id != null}" type="hidden" th:field="*{password}" />
+                                    <input th:if="${user.id != null}" type="hidden" th:field="*{username}" />
                                     <h2 class="text-uppercase text-center mb-1">
                                         <span th:if="${user.id == null}">Create an account</span>
                                         <span th:if="${user.id != null}">Update account</span>
                                     </h2>
-                                    <div th:if="${msgErrShow != ''}" class="justify-content-center" id="message1" style="color:red;text-align: center;">
-                                        <span th:text="${msgErrShow}"></span><br><br>
+                                    <div th:if="${msgErrShow}">
+                                        <p class="justify-content-center" id="message1" style="color:red; text-align: center;">
+                                            <span th:text="${msgErrShow}"></span><br/><br/>
+                                        </p>
                                     </div>
                                     <div class="form-floating mb-3 mt-0">
-                                        <input type="text" class="form-control" th:field="*{firstname}" placeholder="First Name..." />
+                                        <input id="firstname" type="text" class="form-control" th:field="*{firstname}" placeholder="First Name..." />
                                         <label class="form-label" for="firstname">First Name</label>
                                     </div>
                                     <div class="form-floating mb-3 mt-3">
-                                        <input type="text" class="form-control" th:field="*{lastname}" placeholder="Last Name..." />
+                                        <input id="lastname" type="text" class="form-control" th:field="*{lastname}" placeholder="Last Name..." />
                                         <label class="form-label" for="lastname">Last Name</label>
                                     </div>
                                     <div class="form-floating mb-3 mt-3">
-                                        <input type="text" class="form-control" th:field="*{email}" placeholder="example@gmail.com" />
+                                        <input id="email" type="text" class="form-control" th:field="*{email}" placeholder="example@gmail.com" />
                                         <label class="form-label" for="email">Email</label>
                                     </div>
                                     <div th:if="${user.id == null}" class="form-floating mb-3 mt-3">
-                                        <input type="text" class="form-control" th:field="*{username}" placeholder="Username..." />
+                                        <input id="username" type="text" class="form-control" th:field="*{username}" placeholder="Username..." />
                                         <label class="form-label" for="username">Username</label>
                                     </div>
                                     <div th:if="${user.id == null}" class="form-floating mb-3 mt-3">
-                                        <input type="password" class="form-control" th:field="*{password}" placeholder="Password..." />
+                                        <input id="password" type="password" class="form-control" th:field="*{password}" placeholder="Password..." />
                                         <label class="form-label" for="password">Password</label>
                                     </div>
                                     <div th:if="${user.id == null}" class="form-floating mb-3 mt-3">
-                                        <input type="password" class="form-control" placeholder="Repeat your password" />
+                                        <input id="passwordconfirm" type="password" class="form-control" placeholder="Repeat your password" />
                                         <label class="form-label" for="passwordconfirm">Repeat your password</label>
                                     </div>
 
@@ -78,9 +80,6 @@
                                             <option th:each="c : ${userRole}" th:value="${c.id}" th:text="${c.name}" th:selected="${c.id == user.fkuserRoleuserId.id}"></option>
                                         </select>
                                         <label for="fkuserRoleuserId" class="form-label">ROLE</label>
-                                    </div>
-                                    <div th:if="${user.id == null}">
-                                        <input type="hidden" th:field="*{fkuserRoleuserId}" />
                                     </div>
 
                                     <div class="form-floating mb-3 mt-3">
@@ -102,10 +101,8 @@
 
                                         <button type="submit" onclick="matchPassword()"
                                                 class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
-                                            <c:choose>
-                                                <c:when test="${user.id == null}">Register</c:when>
-                                                <c:otherwise>Update</c:otherwise>
-                                            </c:choose>
+                                            <span th:if="${user.id == null}">Register</span>
+                                            <span th:if="${user.id != null}">Update</span>
                                         </button>
                                     </div>
 
@@ -195,7 +192,12 @@
                 alert("Passwords did not match");
                 return false;
             }
-// Nếu tất cả các điều kiện đều được đáp ứng, thì trả về true để gửi form.
+
+            if (!allConditionsMet) {
+                alert("Có lỗi xảy ra, vui lòng kiểm tra lại thông tin.");
+                event.preventDefault(); // Ngăn form gửi dữ liệu lên server
+            }
+            // Nếu tất cả các điều kiện đều được đáp ứng, thì trả về true để gửi form.
             return true;
         }
 

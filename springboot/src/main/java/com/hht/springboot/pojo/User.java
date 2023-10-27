@@ -83,7 +83,12 @@ public class User implements Serializable {
     @JoinColumn(name = "fkuser_roleuser_id", referencedColumnName = "id")
     @ManyToOne
     private Roleuser fkuserRoleuserId;
-    
+
+    @Transient
+    private String oldPassword;
+    @Transient
+    private String newPassword;
+
     @Transient
     private MultipartFile file = null;
 
@@ -92,6 +97,13 @@ public class User implements Serializable {
      */
     public MultipartFile getFile() {
         return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 
     public User() {
@@ -246,5 +258,33 @@ public class User implements Serializable {
     public String toString() {
         return "com.hht.springboot.pojo.User[ id=" + id + " ]";
     }
-    
+
+    /**
+     * @return the oldPassword
+     */
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    /**
+     * @param oldPassword the oldPassword to set
+     */
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    /**
+     * @return the newPassword
+     */
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    /**
+     * @param newPassword the newPassword to set
+     */
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
 }
