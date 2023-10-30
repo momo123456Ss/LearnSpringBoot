@@ -238,4 +238,10 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public boolean authUser(String username, String password) {
+        User u = this.getUserByUsername(username);
+        return this.passEncoder.matches(password, u.getPassword());
+    }
+
 }

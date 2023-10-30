@@ -10,7 +10,9 @@ import org.springframework.context.annotation.ComponentScan;
     "com.hht.springboot.repository",
     "com.hht.springboot.service",
     "com.hht.springboot.formatters",
-    "com.hht.springboot.configs"
+    "com.hht.springboot.configs",
+    "com.hht.springboot.components",
+    "com.hht.springboot.filters"
 })
 public class SpringbootApplication {
 

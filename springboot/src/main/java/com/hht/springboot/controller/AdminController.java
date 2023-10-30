@@ -39,7 +39,7 @@ public class AdminController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/index/User/")
+        @GetMapping("/index/User/")
     public String listUser(Model model, @RequestParam Map<String, String> params) {
         model.addAttribute("roleList", this.roleService.getRole());
         model.addAttribute("listUsers", this.userService.getAllUserSecond(params));
