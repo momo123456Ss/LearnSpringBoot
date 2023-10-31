@@ -25,8 +25,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author HOME
  */
 @Configuration
-@EnableWebSecurity
 @EnableTransactionManagement
+@EnableWebSecurity
+@Order(1)
+
 public class JwtSecurityConfig {
 
     @Bean
@@ -54,37 +56,55 @@ public class JwtSecurityConfig {
     }
 
     @Bean
-    @Order(2)
     protected SecurityFilterChain JwtSecurityConfig(HttpSecurity http, AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
         http
+                .formLogin(formLogin -> formLogin
+                .loginPage("/login").permitAll()
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/home")
+                .failureUrl("/login?error"))
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                .accessDeniedPage("/access-denied"))
+                .logout(logout -> logout
+                .logoutSuccessUrl("/login"));
+        
+        http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(auth -> auth
-                //API    
+                //API    Front-end
                 .requestMatchers("/api/current-user/").permitAll()
                 .requestMatchers("/api/users/").permitAll()
                 .requestMatchers("/api/login/").permitAll()
                 .requestMatchers("/api/findAllUser/").hasRole("ADMIN")
                 .requestMatchers("/api/findAllUserSecond/").hasRole("HOST")
-                );
-//        http.requestMatcher(request -> request.getServletPath().startsWith("/api/"));
-        
-        http.httpBasic(httpBasicConfigurer -> httpBasicConfigurer
-                .authenticationEntryPoint(restServicesEntryPoint())
-        );
-        http
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "HOST", "RENTER")
                 .requestMatchers(HttpMethod.POST, "/api/**").hasAnyRole("ADMIN", "HOST")
                 .requestMatchers(HttpMethod.DELETE, "/api/**").hasAnyRole("ADMIN", "HOST")
                 );
-
-        http.addFilterBefore(jwtAuthenticationTokenFilter(authenticationConfiguration)
-                , UsernamePasswordAuthenticationFilter.class)
+        http
+                .httpBasic(httpBasicConfigurer -> httpBasicConfigurer
+                .authenticationEntryPoint(restServicesEntryPoint()))
+//                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationTokenFilter(authenticationConfiguration),
+                        UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                 .accessDeniedHandler(customAccessDeniedHandler())
-                .authenticationEntryPoint(restServicesEntryPoint())
                 );
+
+        
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/home").permitAll()
+                .requestMatchers("/css/**").permitAll()
+                .requestMatchers("/js/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+                );
+
         return http.build();
     }
 

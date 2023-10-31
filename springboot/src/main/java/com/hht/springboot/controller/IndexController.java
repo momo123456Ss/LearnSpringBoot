@@ -39,7 +39,7 @@ public class IndexController {
         return "home";
     }
     @GetMapping("/")
-    public String update(Model model, @PathVariable(value = "id") int id) {
+    public String update(Model model) {
         return "home";
     }
 }

@@ -22,7 +22,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableWebSecurity
 @EnableTransactionManagement
-public class SecurityConfig{
+@Order(2)
+public class SecurityConfig {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -36,32 +37,33 @@ public class SecurityConfig{
         );
     }
 
-    @Bean
-    @Order(1)
-    protected SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/home").permitAll()
-                .requestMatchers("/css/**").permitAll()
-                .requestMatchers("/js/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated())
-                .formLogin(formLogin -> formLogin
-                .loginPage("/login").permitAll()
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/home")
-                .failureUrl("/login?error"))
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                .accessDeniedPage("/access-denied"))
-                .logout(logout -> logout
-                .logoutSuccessUrl("/login"));
-        http.csrf(csrf -> csrf.disable());
-        return http.build();
-    }
-    
-    
-    
+//    @Bean
+//    protected SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .formLogin(formLogin -> formLogin
+//                .loginPage("/login").permitAll()
+//                .usernameParameter("username")
+//                .passwordParameter("password")
+//                .defaultSuccessUrl("/home")
+//                .failureUrl("/login?error"))
+//                .exceptionHandling(exceptionHandling -> exceptionHandling
+//                .accessDeniedPage("/access-denied"))
+//                .logout(logout -> logout
+//                .logoutSuccessUrl("/login"));
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(auth -> auth
+//                .requestMatchers("/").permitAll()
+//                .requestMatchers("/home").permitAll()
+//                .requestMatchers("/css/**").permitAll()
+//                .requestMatchers("/js/**").permitAll()
+//                .requestMatchers("/h2-console/**").permitAll()
+//                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                .anyRequest().authenticated()
+//                );
+//
+//
+//        return http.build();
+//    }
+
 }
